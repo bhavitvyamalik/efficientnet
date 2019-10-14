@@ -204,12 +204,14 @@ def mb_conv_block(inputs, block_args, activation, drop_rate=None, prefix='', ):
     bn_axis = 3 if backend.image_data_format() == 'channels_last' else 1
 
     # workaround over non working dropout with None in noise_shape in tf.keras
+    '''
     Dropout = get_dropout(
         backend=backend,
         layers=layers,
         models=models,
         utils=keras_utils
     )
+    '''
 
     # Expansion phase
     filters = block_args.input_filters * block_args.expand_ratio
@@ -272,14 +274,14 @@ def mb_conv_block(inputs, block_args, activation, drop_rate=None, prefix='', ):
                       kernel_initializer=CONV_KERNEL_INITIALIZER,
                       name=prefix + 'project_conv')(x)
     x = layers.BatchNormalization(axis=bn_axis, name=prefix + 'project_bn')(x)
-    if block_args.id_skip and all(
+    '''if block_args.id_skip and all(
             s == 1 for s in block_args.strides
     ) and block_args.input_filters == block_args.output_filters:
         if drop_rate and (drop_rate > 0):
             x = Dropout(drop_rate,
                         noise_shape=(None, 1, 1, 1),
                         name=prefix + 'drop')(x)
-        x = layers.add([x, inputs], name=prefix + 'add')
+        x = layers.add([x, inputs], name=prefix + 'add')'''
 
     return x
 
@@ -437,8 +439,8 @@ def EfficientNet(width_coefficient,
     x = layers.Activation(activation, name='top_activation')(x)
     if include_top:
         x = layers.GlobalAveragePooling2D(name='avg_pool')(x)
-        if dropout_rate and dropout_rate > 0:
-            x = layers.Dropout(dropout_rate, name='top_dropout')(x)
+        '''if dropout_rate and dropout_rate > 0:
+            x = layers.Dropout(dropout_rate, name='top_dropout')(x)'''
         x = layers.Dense(classes,
                          activation='softmax',
                          kernel_initializer=DENSE_KERNEL_INITIALIZER,
