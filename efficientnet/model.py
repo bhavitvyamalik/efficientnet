@@ -148,7 +148,7 @@ def get_swish(**kwargs):
             try:
                 # The native TF implementation has a more
                 # memory-efficient gradient implementation
-                return backend.tf.nn.swish(x)
+                return x * backend.sigmoid(x)
             except AttributeError:
                 pass
 
